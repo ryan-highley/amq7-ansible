@@ -1,0 +1,24 @@
+[all:vars]
+amq7_root=/opt/amq7
+amq7_zip=amq-broker-7.1.1-bin.zip
+shared_store=/mnt/nfsmount
+shared_src=support1.e9bd.internal:/srv/nfs
+
+
+[masters]
+master1.e9bd.internal broker_name=broker1
+master2.e9bd.internal broker_name=broker2
+master3.e9bd.internal broker_name=broker3
+
+[masters:vars]
+slave_setting=
+
+
+[slaves]
+node1.e9bd.internal broker_name=broker1
+node2.e9bd.internal broker_name=broker2
+node3.e9bd.internal broker_name=broker3
+
+[slaves:vars]
+slave_setting=--slave
+
