@@ -1,0 +1,43 @@
+---
+- hosts: all
+  remote_user: root
+  tasks:
+          - name: create amq7 root directory
+            file:
+                    path: "{{ amq7_root }}"
+                    type: directory
+                    state: present
+          - name: unarchive amq7 installation
+            unarchive:
+                    dest: "{{ amq7_root }}"
+                    src: "{{ amq7_zip }}"
+          - name: find amq7 base directory
+            find:
+                    file_type: directory
+                    paths: "{{ amq7_root }}"
+            register: amq7_root_directories
+          - name: create shared store directory
+            file:
+                    path: "{{ shared_store }}"
+                    type: directory
+                    state: present
+          - name: mount shared store directory
+            mount:
+                    path: "{{ shared_dir }}"
+                    state: mounted
+                    fstype: nfs
+                    src: "{{ shared_src }}"
+          - name: allow openwire connections
+            iptables:
+                    chain: INPUT
+                    protocol: tcp
+                    destination_port: 61616
+                    jump: ACCEPT
+          - name: allow amqp connections
+            iptables:
+                    chain: INPUT
+                    protocol: tcp
+                    destination_port: 5672
+                    jump: ACCEPT
+
+
